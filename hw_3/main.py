@@ -56,7 +56,6 @@ def phones_create():
         with get_db_connection() as conn:
             cur = conn.cursor()
             cur.execute(sql_query)
-            conn.commit()
 
     return 'Phone was added'
 
@@ -113,7 +112,6 @@ def phones_update():
     with get_db_connection() as conn:
         cur = conn.cursor()
         cur.execute(sql_query)
-        conn.commit()
 
     return f"Phone with id '{phone_id}' was updated, if it had been in database before then))))"
 
@@ -139,7 +137,6 @@ def phones_delete():
     with get_db_connection() as conn:
         cur = conn.cursor()
         cur.execute(sql_request)
-        conn.commit()
 
     return f"Phone with phoneID '{phone_id}' was deleted, if it had been in database before then:))))"
 
