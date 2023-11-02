@@ -12,6 +12,7 @@ SCHEMA = 'schema.sql'
 
 import sqlite3
 
+
 def get_db_connection():
     """
     Establishes a connection to the SQLite database defined by the constant DATABASE and configures
@@ -23,7 +24,6 @@ def get_db_connection():
     conn = sqlite3.connect(DATABASE)
     conn.row_factory = sqlite3.Row
     return conn
-
 
 
 @app.route("/phones/create", methods=["POST", "GET"])
