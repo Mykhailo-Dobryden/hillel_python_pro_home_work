@@ -21,7 +21,6 @@ def get_db_connection():
         sqlite3.Connection: A connection object to the SQLite database.
     """
     conn = sqlite3.connect(DATABASE)
-    print('Connected to the database')
     conn.row_factory = sqlite3.Row
     return conn
 
@@ -54,11 +53,10 @@ def phones_create():
         return 'phone number must consist only digits'
     else:
         sql_query = generate_phones_create_query(name=contact_name, phone=phone_value)
-        conn = get_db_connection()
-        cur = conn.cursor()
-        cur.execute(sql_query)
-        conn.commit()
-        conn.close()
+        with get_db_connection() as conn:
+            cur = conn.cursor()
+            cur.execute(sql_query)
+            conn.commit()
 
     return 'Phone was added'
 
@@ -80,11 +78,12 @@ def phones_read():
     order = request.args.get('order')
     if not order:
         return "Use 'order' for sorting data by next colum: id, name, phone"
-    conn = get_db_connection()
-    cur = conn.cursor()
-    sql_query = generate_phones_read_query(order)
-    phones = cur.execute(sql_query).fetchall()
-    conn.close()
+
+    with get_db_connection() as conn:
+        cur = conn.cursor()
+        sql_query = generate_phones_read_query(order)
+        phones = cur.execute(sql_query).fetchall()
+
     return render_template('phones_read.html', phones=phones)
 
 
@@ -110,11 +109,12 @@ def phones_update():
         return "Either [name] or [phone], or both are required!"
 
     sql_query = generate_phones_update_query(phone_id=phone_id, name=contact_name, phone=phone_value)
-    conn = get_db_connection()
-    cur = conn.cursor()
-    cur.execute(sql_query)
-    conn.commit()
-    conn.close()
+
+    with get_db_connection() as conn:
+        cur = conn.cursor()
+        cur.execute(sql_query)
+        conn.commit()
+
     return f"Phone with id '{phone_id}' was updated, if it had been in database before then))))"
 
 
@@ -133,12 +133,13 @@ def phones_delete():
     phone_id = request.args.get('id')
     if phone_id is None:
         return 'id is required!'
-    conn = get_db_connection()
-    cur = conn.cursor()
+
     sql_request = generate_phones_delete_query(phone_id)
-    cur.execute(sql_request)
-    conn.commit()
-    conn.close()
+
+    with get_db_connection() as conn:
+        cur = conn.cursor()
+        cur.execute(sql_request)
+        conn.commit()
 
     return f"Phone with phoneID '{phone_id}' was deleted, if it had been in database before then:))))"
 
